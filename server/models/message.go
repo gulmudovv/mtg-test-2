@@ -1,7 +1,7 @@
 package models
 
 type Message struct {
-	Id   uint
-	ID   uint64
-	Data uint64
+	Id     uint
+	Socket string
+	Data   string
 }

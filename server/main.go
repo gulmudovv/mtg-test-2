@@ -1,6 +1,8 @@
 package main
 
 import (
+	"MTG-test-2/server/database"
+	"encoding/base64"
 	"fmt"
 	"log"
 	"net/http"
@@ -36,17 +38,35 @@ func reader(conn *websocket.Conn) {
 			log.Println(err)
 			return
 		}
-		// print out that message for clarity
-		fmt.Printf("Client: %s send message: %s\n", conn.RemoteAddr(), string(p))
+
+		//save to database
+		id := conn.RemoteAddr().String()
+		data, err := decode(string(p))
+		if err != nil {
+			log.Println(err)
+			return
+		}
+		fmt.Printf("Data %s id %s", data, id)
+		database.Create(id, data)
 
 	}
 }
 
 func main() {
+	database.ConnectDB()
 	http.HandleFunc("/ws", wsHandle)
-	log.Println("http server started on :8000")
-	err := http.ListenAndServe(":8000", nil)
+	log.Println("http server started on :8585")
+	err := http.ListenAndServe(":8585", nil)
 	if err != nil {
 		log.Fatal("ListenAndServe: ", err)
 	}
+}
+
+func decode(enc string) (string, error) {
+	decoded, err := base64.StdEncoding.DecodeString(enc)
+	if err != nil {
+		fmt.Println("decode error:", err)
+		return "", err
+	}
+	return string(decoded), nil
 }

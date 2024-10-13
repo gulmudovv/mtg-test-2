@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"net/http"
 	"path"
+	"strconv"
 
 	"github.com/gorilla/mux"
 )
@@ -17,8 +18,15 @@ func HomeHandler(w http.ResponseWriter, r *http.Request) {
 
 }
 func TestHandler(w http.ResponseWriter, r *http.Request) {
-	//num := r.URL.Query().Get("num")
-	ws.Worker()
+	num := r.URL.Query().Get("num")
+	if num == "" {
+		num = "1"
+	}
+	numInt, err := strconv.Atoi(num)
+	if err != nil {
+		numInt = 1
+	}
+	ws.Worker(numInt)
 }
 func main() {
 

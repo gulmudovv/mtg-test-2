@@ -12,9 +12,9 @@ import (
 const (
 	host     = "localhost"
 	port     = 5432
-	user     = "postgres"
-	password = "postgres"
-	dbname   = "postgres"
+	user     = "admin"
+	password = "12345"
+	dbname   = "ginblog"
 )
 
 var DB *gorm.DB
@@ -35,4 +35,11 @@ func ConnectDB() {
 		log.Fatalf("Migrate to database failed: %v", err)
 	}
 
+}
+
+func Create(id, data string) {
+	DB.Create(&models.Message{
+		Socket: id,
+		Data:   data,
+	})
 }
